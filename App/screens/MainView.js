@@ -8,7 +8,8 @@ import {
   Alert,
   BackAndroid,
   StatusBar,
-  Dimensions
+  Dimensions,
+  Image
 } from 'react-native';
 import Header from '../component/Header';
 import { connect } from 'react-redux';
@@ -18,10 +19,16 @@ import { LinesLoader } from 'react-native-indicator';
 class MainView extends Component {
 
   static navigationOptions = {
+    tabBarLabel: 'Bùi Anh Tuấn',
     title: 'MainView',
     headerLeft: null,
     header: null,
-    gesturesEnabled: false
+    gesturesEnabled: false,
+    tabBarIcon: ({ tintColor }) => (
+      <Image
+        source={require('../icon/buianhtuan.png')}
+      />
+    ),
   };
   _loading = () => {
     const { width, height } = Dimensions.get('window');

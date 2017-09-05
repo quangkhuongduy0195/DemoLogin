@@ -47,7 +47,7 @@ class ComponentLogin extends Component {
                     }
                 }
             }).done();
-        }, 1000);
+        }, 500);
     }
 
     shouldComponentUpdate(nextProps, nextState) {
