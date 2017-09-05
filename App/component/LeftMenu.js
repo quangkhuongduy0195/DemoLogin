@@ -11,7 +11,7 @@ import {
     Platform
 } from 'react-native';
 import { connect } from 'react-redux';
-import { AsyncLoadMore, AsyncLoadData } from '../Action/ActionMenu';
+import { AsyncLoadMore, AsyncLoadData, SelectItem } from '../Action/ActionMenu';
 import Spinner from 'react-native-spinkit';
 import { LinesLoader } from 'react-native-indicator';
 import ImageLoad from 'react-native-image-placeholder';
@@ -36,7 +36,7 @@ class LeftMenu extends Component {
         return (
             <TouchableOpacity onPress={() => {
                 navigate("DrawerClose");
-                navigate("ViewVideo");
+                this.props.selectItem(item.NAME, item.LINK);
                 console.log('index', index);
             }}>
                 <View style={{ flex: 1, flexDirection: 'row', paddingLeft: 10, paddingRight: 10, alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
@@ -133,7 +133,8 @@ export default connect(
     dispatch => {
         return {
             asyncLoadData: () => dispatch(AsyncLoadData()),
-            asyncLoadMore: (pages) => dispatch(AsyncLoadMore(pages))
+            asyncLoadMore: (pages) => dispatch(AsyncLoadMore(pages)), 
+            selectItem: (singer, link) =>dispatch(SelectItem(singer, link))
         }
     }
 )(LeftMenu);

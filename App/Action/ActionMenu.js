@@ -16,7 +16,7 @@ export const getDataSuccess = (dt) => {
 export const AsyncLoadData = () => {
     return dispatch => {
         dispatch(getData());
-        fetch('http://10.1.12.239/singer/data.php?pages=0', { method: 'get' })
+        fetch('http://192.168.191.2/singer/', { method: 'get' })
             .then((response) => response.json())
             .then((dataJson) => {
                 dispatch(getDataSuccess(dataJson));
@@ -47,7 +47,7 @@ export const getMoreData = (dataJson, page) => {
 export const AsyncLoadMore = (pages) => {
     return dispatch => {
         dispatch(getMore());
-        fetch('http://10.1.12.239/singer/data.php?pages=' + pages, { method: 'get' })
+        fetch('http://192.168.191.2/singer/', { method: 'get' })
             .then((response) => response.json())
             .then((dataJson) => {
                 dispatch(getMoreData(dataJson, pages));
@@ -59,7 +59,7 @@ export const AsyncLoadMore = (pages) => {
     }
 }
 
-export const selectItem = (singer,link) => {
+export const SelectItem = (singer,link) => {
     return {
         type: 'select',
         singer: singer,

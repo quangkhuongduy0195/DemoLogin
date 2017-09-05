@@ -8,12 +8,13 @@ import {
     Alert,
     BackAndroid,
     StatusBar,
-    Dimensions
+    Dimensions,
+    WebView
 } from 'react-native';
 import Header from '../component/Header';
 import { connect } from 'react-redux';
 import { LinesLoader } from 'react-native-indicator';
-
+// import VideoPlayer from 'react-native-video-controls';
 
 class ViewVideo extends Component {
 
@@ -22,9 +23,12 @@ class ViewVideo extends Component {
         gesturesEnabled: false
     };
     render() {
+        var widthVideo = Dimensions.get('window').width-15;
+        var heightVideo = Dimensions.get('window').height/3;
+        const{params} = this.props.navigation.state;
         return (
-            <View style={{ flex: 1, }} >
-                
+            <View style={styles.container} >
+                <WebView style={{width: widthVideo+15, height: heightVideo}} source ={{html:`<video controls width="${widthVideo}" height="${heightVideo}" ><source src="${params.link}" type="video/mp4"></video>`}} />
             </View>
         );
     }

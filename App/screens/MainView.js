@@ -91,16 +91,23 @@ class MainView extends Component {
 
 
   componentWillUnmount() {
-    // this.props.navigation.goBack(null);
-    // goBack();
     BackHandler.removeEventListener('hardwareBackPress', this.ShowAlertDialog);
   }
 
-
-  ShowAlertDialog() {
-
-
+  shouldComponentUpdate(nextProps, nextState) {
+    return true;
   }
+
+  componentWillUpdate(nextProps, nextState) {
+    
+  }  
+  componentDidUpdate(prevProps, prevState) {
+    if(!this.props.refresh && this.props.singer !== ''){
+      this.props.navigation.navigate("ViewVideo", {singer: this.props.singer, link: this.props.link});
+    }
+  }
+
+
 
 }
 
@@ -136,6 +143,8 @@ export default connect(
   state => {
     return {
       refresh: state.menu.refresh,
+      singer: state.menu.singer,
+      link: state.menu.link
     }
   },
   dispatch => {
