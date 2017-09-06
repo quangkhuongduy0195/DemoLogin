@@ -19,11 +19,17 @@ class MainView extends Component {
         tabBarLabel: 'Chi Dân',
         tabBarIcon: ({ tintColor }) => (
             <Image
-                style={{ width: 26, height: 26, tintColor: tintColor}}
-                source={require('../../icon/ic_settings.png')}
+                style={{ width: 26, height: 26 }}
+                source={require('../../icon/chidan.jpg')}
             />
-        ),
+        )
     };
+
+    componentWillReceiveProps(newProps) {
+        if (newProps.screenProps.route_index === 1) {
+            
+        }
+    }
 
     render() {
         console.log('mainview', this.props);

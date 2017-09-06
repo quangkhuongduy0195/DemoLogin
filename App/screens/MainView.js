@@ -15,6 +15,16 @@ import Header from '../component/Header';
 import { connect } from 'react-redux';
 import { LinesLoader } from 'react-native-indicator';
 
+import {
+  GoogleAnalyticsTracker,
+  GoogleTagManager,
+  GoogleAnalyticsSettings
+} from 'react-native-google-analytics-bridge';
+
+// The tracker must be constructed, and you can have multiple:
+let tracker1 = new GoogleAnalyticsTracker('UA-105991151-1');
+
+
 
 class MainView extends Component {
 
@@ -25,9 +35,12 @@ class MainView extends Component {
     header: null,
     gesturesEnabled: false,
     tabBarIcon: ({ tintColor }) => (
-      <Image
-        source={require('../icon/buianhtuan.png')}
-      />
+      <View>
+        <Image
+          source={require('../icon/buianhtuan.png')}
+          style={[styles.icon]}
+        />
+      </View>
     ),
   };
   _loading = () => {
@@ -45,8 +58,21 @@ class MainView extends Component {
 
   }
 
+  componentDidMount() {
+    tracker1.trackScreenView('Home');
+  }
+
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.screenProps !== null) {
+      if (newProps.screenProps.route_index === 0) {
+        
+      }
+    }
+  }
+
+
   render() {
-    console.log('mainview', this.props);
 
     return (
       <View style={{ flex: 1, }} >
@@ -106,11 +132,11 @@ class MainView extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    
-  }  
+
+  }
   componentDidUpdate(prevProps, prevState) {
-    if(!this.props.refresh && this.props.singer !== ''){
-      this.props.navigation.navigate("ViewVideo", {singer: this.props.singer, link: this.props.link});
+    if (!this.props.refresh && this.props.singer !== '') {
+      this.props.navigation.navigate("ViewVideo", { singer: this.props.singer, link: this.props.link });
     }
   }
 
@@ -144,6 +170,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  icon: {
+    width: 25,
+    height: 25
   }
 });
 export default connect(

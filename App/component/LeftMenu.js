@@ -69,9 +69,7 @@ class LeftMenu extends Component {
 
     render() {
         const { data, refresh, pages } = this.props;
-        console.log('LeftMenu-----------', this.props);
         var type = this.state.types[this.state.index];
-        console.log('refresh', refresh);
         var endScroll = -0.01;
         if(Platform.OS == 'android'){
             endScroll = 0.0001;
@@ -107,7 +105,6 @@ class LeftMenu extends Component {
     }
 
     componentDidMount() {
-        console.log('componentDidMount');
         this.props.asyncLoadData();
     }
 }

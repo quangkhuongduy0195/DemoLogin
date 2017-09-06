@@ -9,7 +9,7 @@ let login = {
 const LoginReducer = (state = login, action) => {
     switch (action.type) {
         case 'login': {
-            return { ...state, login: true }
+            return { ...state, login: true, autoLogin:true }
         }
         case 'autologin': {
             const isAutoLogin = !state.autoLogin;

@@ -33,21 +33,7 @@ class ComponentLogin extends Component {
             duration: 500,
             useNativeDriver: true
         }).start();
-        setTimeout(() => {
-            AsyncStorage.getItem('key').then((value) => {
-                switch (value) {
-                    case 'true': {
-                        if (value) {
-                            navigate('Main')
-                        }
-                        break;
-                    }
-                    default: {
-                        break;
-                    }
-                }
-            }).done();
-        }, 500);
+        
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -79,7 +65,7 @@ class ComponentLogin extends Component {
                 <Animated.View style={{
                     transform: [{ scale: scaleAnim }]
                 }}>
-                    <TouchableOpacity style={styles.touchableOpacityLogin} onPress={() => navigate('Main')}>
+                    <TouchableOpacity style={styles.touchableOpacityLogin} onPress={() => Login(true)}>
                         <Text style={styles.login}>
                             Login
                         </Text>
