@@ -9,11 +9,16 @@ import {
   BackAndroid,
   StatusBar,
   Dimensions,
-  Image
+  Image,
+  Button,
+  FlatList,
+  RefreshControl,
+  AppState
 } from 'react-native';
 import Header from '../component/Header';
 import { connect } from 'react-redux';
 import { LinesLoader } from 'react-native-indicator';
+import { AsyncDataBuiAnhTuan, AsyncLoadMoreBuiAnhTuan } from '../Action/BuiAnhTuanAction';
 
 import {
   GoogleAnalyticsTracker,
@@ -43,10 +48,18 @@ class MainView extends Component {
       </View>
     ),
   };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      appState: AppState.currentState
+    }
+  }
+
   _loading = () => {
     const { width, height } = Dimensions.get('window');
-    const { refresh } = this.props;
-    if (refresh) {
+    const { refreshMenu, flag } = this.props;
+    if (refreshMenu || !flag) {
       return (
         <View style={[styles.overlay, { width: width, height: height }]} >
           <LinesLoader color="#FF9800" />
@@ -54,26 +67,51 @@ class MainView extends Component {
       );
     } else {
       return null;
+
     }
-
   }
-
-  componentDidMount() {
-    tracker1.trackScreenView('Home');
-  }
-
 
   componentWillReceiveProps(newProps) {
-    if (newProps.screenProps !== null) {
-      if (newProps.screenProps.route_index === 0) {
-        
-      }
+
+  }
+
+  contentData = ({ item, index }) => {
+    const { dataSinger } = this.props;
+    return (
+      <View style={{ alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+        <View>
+          <Image style={{ width: 200, height: 200, borderRadius: 100 }} source={{ uri: item.IMAGE }} />
+        </View>
+        <View>
+          <Text style={{ fontWeight: 'bold', fontSize: 32, color: '#000' }}>{item.NAME}</Text>
+        </View>
+        <View>
+          <Text style={{ fontSize: 26, textAlign: 'justify', color: '#000', paddingLeft: 16, paddingRight: 16 }}>{item.COMMENT}</Text>
+        </View>
+      </View>
+    );
+  }
+  _refresfData = () => {
+    tracker1.trackScreenView('ハロー');
+    tracker1.trackEvent('イベントグループ', 'イベント', { label: 'イベントラベル' });
+    tracker1.trackEvent('事件组', '事件', { label: '事件标签' });
+    tracker1.trackEvent('กลุ่มเหตุการณ์', 'เหตุการณ์', { label: 'ป้ายกำกับเหตุการณ์' })
+    this.props.asyncDataBuiAnhTuan();
+  }
+
+  _loadMore = () => {
+    if (this.props.isLoadMore) {
+      return (
+        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+          <LinesLoader color='#FF5722' />
+        </View>
+      );
+    } else {
+      return null;
     }
   }
 
-
   render() {
-
     return (
       <View style={{ flex: 1, }} >
         <StatusBar
@@ -83,16 +121,33 @@ class MainView extends Component {
         />
         <Header style={{ height: 64 }} {...this.props} />
         <View style={styles.container}>
-          <Text style={styles.welcome}>
-            Main View
-          </Text>
+          <FlatList
+
+            refreshControl={
+              <RefreshControl
+                colors={['#2196F3', '#F44336', '#FFEB3B']}
+                refreshing={this.props.refresh}
+                onRefresh={this._refresfData}
+              />
+            }
+            onEndReachedThreshold={0.001}
+            onEndReached={() => {
+              this.props.asyncLoadMoreBuiAnhTuan()
+            }}
+            style={{ marginTop: 15, marginBottom: 15, height: 300 }}
+            data={this.props.dataSinger}
+            renderItem={this.contentData}
+            keyExtractor={(item, index) => index}
+          />
         </View>
         {this._loading()}
+        {this._loadMore()}
       </View>
     );
   }
 
   componentDidMount() {
+    AppState.addEventListener('change', this._handleAppStateChange);
     BackHandler.addEventListener('hardwareBackPress', function () {
       // ShowAlertDialog();
 
@@ -119,11 +174,15 @@ class MainView extends Component {
 
       return true;
     });
+
+
+
   }
 
 
 
   componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange);
     BackHandler.removeEventListener('hardwareBackPress', this.ShowAlertDialog);
   }
 
@@ -138,7 +197,23 @@ class MainView extends Component {
     if (!this.props.refresh && this.props.singer !== '') {
       this.props.navigation.navigate("ViewVideo", { singer: this.props.singer, link: this.props.link });
     }
+
+    if (!this.props.flag) {
+      this.props.asyncDataBuiAnhTuan();
+    }
   }
+
+
+
+  _handleAppStateChange = (nextAppState) => {
+    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+      this.props.asyncDataBuiAnhTuan();
+    } else if (this.state.appState.match(/inactive|background/) && nextAppState === 'background') {
+
+    }
+    this.setState({ appState: nextAppState });
+  }
+
 
 
 
@@ -179,14 +254,19 @@ const styles = StyleSheet.create({
 export default connect(
   state => {
     return {
-      refresh: state.menu.refresh,
+      refreshMenu: state.menu.refresh,
       singer: state.menu.singer,
-      link: state.menu.link
+      link: state.menu.link,
+      dataSinger: state.BuiAnhTuan.data,
+      flag: state.BuiAnhTuan.flag,
+      refresh: state.BuiAnhTuan.refresh,
+      isLoadMore: state.BuiAnhTuan.isLoadMore
     }
   },
   dispatch => {
     return {
-
+      asyncDataBuiAnhTuan: () => dispatch(AsyncDataBuiAnhTuan()),
+      asyncLoadMoreBuiAnhTuan: () => dispatch(AsyncLoadMoreBuiAnhTuan())
     }
   }
 )(MainView);

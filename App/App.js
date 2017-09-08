@@ -123,7 +123,7 @@ class App extends Component {
                     }
                 }
             }).done();
-        }, 250);
+        }, 500);
     }
 
 }

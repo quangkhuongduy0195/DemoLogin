@@ -21,11 +21,14 @@ class Test1 extends Component {
     componentDidMount(){
         tracker1.trackScreenView('ViewTest1');
     }
+    btnClick = () => {
+        this.props.navigation.navigate("test2")
+    }
 
     render() {
         return (
             <View style={styles.container} >
-                <Button title='test2' onPress={()=>{ this.props.navigation.navigate("test2") }}/>
+                <Button title='test2' onPress={()=>{ this.btnClick }}/>
             </View>
         );
     }

@@ -133,6 +133,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-activity-android')
     compile project(':react-native-google-analytics-bridge')
 //     compile project(':react-native-video')
     compile project(':react-native-spinkit')

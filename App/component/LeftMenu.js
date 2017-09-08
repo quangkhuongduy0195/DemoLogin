@@ -6,7 +6,7 @@ import {
     View,
     FlatList,
     Image,
-    TouchableOpacity, 
+    TouchableOpacity,
     RefreshControl,
     Platform
 } from 'react-native';
@@ -32,9 +32,10 @@ class LeftMenu extends Component {
 
 
     renderItems = ({ item, index }) => {
-        const {navigate} = this.props.navigation;
+        const { navigate } = this.props.navigation;
         return (
             <TouchableOpacity onPress={() => {
+                console.log(this.props.navigation);
                 navigate("DrawerClose");
                 this.props.selectItem(item.NAME, item.LINK);
                 console.log('index', index);
@@ -71,7 +72,7 @@ class LeftMenu extends Component {
         const { data, refresh, pages } = this.props;
         var type = this.state.types[this.state.index];
         var endScroll = -0.01;
-        if(Platform.OS == 'android'){
+        if (Platform.OS == 'android') {
             endScroll = 0.0001;
         }
 
@@ -84,7 +85,7 @@ class LeftMenu extends Component {
                                 colors={["#66BB6A", "#FFCA28", "#03A9F4"]}
                                 tintColor='#FAFAFA'
                                 refreshing={refresh}
-                                onRefresh={()=>{this.props.asyncLoadData()}}
+                                onRefresh={() => { this.props.asyncLoadData() }}
                             />
                         }
                         onEndReachedThreshold={endScroll}
@@ -130,8 +131,8 @@ export default connect(
     dispatch => {
         return {
             asyncLoadData: () => dispatch(AsyncLoadData()),
-            asyncLoadMore: (pages) => dispatch(AsyncLoadMore(pages)), 
-            selectItem: (singer, link) =>dispatch(SelectItem(singer, link))
+            asyncLoadMore: (pages) => dispatch(AsyncLoadMore(pages)),
+            selectItem: (singer, link) => dispatch(SelectItem(singer, link))
         }
     }
 )(LeftMenu);

@@ -11,11 +11,13 @@ import {
     Image,
     Dimensions,
     ScrollView,
-    RefreshControl
+    RefreshControl,
+    FlatList
 } from 'react-native';
 import { connect } from 'react-redux';
 import Header from '../../component/Header';
-import { AsyncDataUngHoangPhuc } from '../../Action/UngHoangPhucAction';
+import { LinesLoader } from 'react-native-indicator';
+import { AsyncDataUngHoangPhuc, AsyncLoadMoreUngHoangPhuc } from '../../Action/UngHoangPhucAction';
 
 class MainView extends Component {
 
@@ -30,51 +32,68 @@ class MainView extends Component {
     };
 
     componentWillReceiveProps(newProps) {
-        if (newProps.screenProps.route_index === 2 && !this.props.flag) {
-            this.props.asyncDataUngHoangPhuc();
+        if (newProps.screenProps !== null) {
+            if (newProps.screenProps.route_index === 2 && !this.props.flag) {
+                this.props.asyncDataUngHoangPhuc();
+            }
         }
     }
-    contentData = () => {
+    contentData = ({ item, index }) => {
+        const { dataSinger } = this.props;
+        return (
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+                <View>
+                    <Image style={{ width: 200, height: 200, borderRadius: 100 }} source={{ uri: item.IMAGE }} />
+                </View>
+                <View>
+                    <Text style={{ fontWeight: 'bold', fontSize: 32, color: '#000' }}>{item.NAME}</Text>
+                </View>
+                <View>
+                    <Text style={{ fontSize: 26, textAlign: 'justify', color: '#000', paddingLeft: 16, paddingRight: 16 }}>{item.COMMENT}</Text>
+                </View>
+            </View>
+        );
+    }
 
-        if (this.props.dataSinger !== null) {
-            const { dataSinger } = this.props;
+    _refresfData = () => {
+        this.props.asyncDataUngHoangPhuc()
+    }
+
+    _loadMore = () => {
+        if (this.props.isLoadMore) {
             return (
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-                    <View>
-                        <Image style={{ width: 200, height: 200, borderRadius: 100 }} source={{ uri: this.props.dataSinger.IMAGE }} />
-                    </View>
-                    <View>
-                        <Text style={{ fontWeight: 'bold', fontSize: 32, color: '#000' }}>{dataSinger.NAME}</Text>
-                    </View>
-                    <View>
-                        <Text style={{ fontSize: 18, textAlign: 'justify', color: '#000', paddingLeft: 16, paddingRight: 16 }}>{dataSinger.COMMENT}</Text>
-                    </View>
+                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                    <LinesLoader color='#FF5722' />
                 </View>
             );
         } else {
-            return (
-                <View>
-                    <Text>No data</Text>
-                </View>
-            );
+            return null;
         }
     }
+
     render() {
-
-
         return (
             <View style={{ flex: 1 }} >
                 <Header style={{ height: 64 }} {...this.props} />
                 <View style={styles.container}>
-                    <ScrollView
+                    <FlatList
                         refreshControl={
                             <RefreshControl
-                                refreshing={false}
+                                colors={['#2196F3', '#F44336', '#FFEB3B']}
+                                refreshing={this.props.refresh}
+                                onRefresh={this._refresfData}
                             />
                         }
-                    >
-                        {this.contentData()}
-                    </ScrollView>
+                        onEndReachedThreshold={0.01}
+                        onEndReached={() => {
+                            this.props.asyncLoadMoreUngHoangPhuc()
+                        }}
+                        style={{ marginTop: 15, marginBottom: 15 }}
+                        data={this.props.dataSinger}
+                        renderItem={this.contentData}
+                        keyExtractor={(item, index) => index}
+                    />
+                    {this._loadMore()}
                 </View>
             </View>
         );
@@ -86,7 +105,6 @@ class MainView extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'green',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -109,12 +127,15 @@ export default connect(
     state => {
         return {
             dataSinger: state.UngHoangPhuc.data,
-            flag: state.UngHoangPhuc.flag
+            flag: state.UngHoangPhuc.flag,
+            refresh: state.UngHoangPhuc.refresh,
+            isLoadMore: state.UngHoangPhuc.isLoadMore,
         }
     },
     dispatch => {
         return {
-            asyncDataUngHoangPhuc: () => dispatch(AsyncDataUngHoangPhuc())
+            asyncDataUngHoangPhuc: () => dispatch(AsyncDataUngHoangPhuc()),
+            asyncLoadMoreUngHoangPhuc: () => dispatch(AsyncLoadMoreUngHoangPhuc())
         }
     }
 )(MainView);

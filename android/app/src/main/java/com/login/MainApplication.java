@@ -3,6 +3,7 @@ package com.login;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import ca.jaysoo.activityandroid.ActivityAndroidPackage;
 import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
 // import com.brentvatne.react.ReactVideoPackage;
 import com.react.rnspinkit.RNSpinkitPackage;
@@ -26,6 +27,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ActivityAndroidPackage(),
             new GoogleAnalyticsBridgePackage(),
             // new ReactVideoPackage(),
             new RNSpinkitPackage()
